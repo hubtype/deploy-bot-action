@@ -1,0 +1,47 @@
+name: "Deploy Bot"
+description: "Build & Publish bot to your environment"
+
+inputs:
+  BOT_SRC_DIR:
+    description: "Directory where the bot src is"
+    required: true
+  BOT_NAME:
+    description: "Name of the bot"
+    required: true
+  USERNAME:
+    description: "Name of the user admin that will deploy the bot"
+    required: true
+  PASSWORD:
+    description: "Password of the user admin that will deploy the bot"
+    required: true
+    
+runs:
+  using: "composite"
+  steps:
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2.1.5
+        with:
+          node-version: "12"
+
+      - name: Setting up cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Dependencies
+        working-directory: ${{ inputs.BOT_SRC_DIR }}
+        run: npm install -g @botonic/cli && npm ci
+        shell: bash
+
+      - name: Build Bot
+        working-directory: ${{ inputs.BOT_SRC_DIR }}
+        run: botonic logout && npm run build
+        shell: bash
+
+      - name: Deploy Bot
+        working-directory: ${{ inputs.BOT_SRC_DIR }}
+        run: botonic deploy -b ${{ inputs.BOT_NAME }} -e ${{ inputs.USERNAME }} -p ${{ inputs.PASSWORD }}
+        shell: bash
