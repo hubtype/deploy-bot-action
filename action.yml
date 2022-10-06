@@ -14,6 +14,10 @@ inputs:
   PASSWORD:
     description: "Password of the user admin that will deploy the bot"
     required: true
+  BUILD_COMMAND:
+    description: "The command that builds the bot, for example 'npm run build'"
+    required: true
+    default: "npm run build"
     
 runs:
   using: "composite"
@@ -38,7 +42,7 @@ runs:
 
       - name: Build Bot
         working-directory: ${{ inputs.BOT_SRC_DIR }}
-        run: botonic logout && npm run build
+        run: botonic logout && ${{ inputs.BUILD_COMMAND }}
         shell: bash
 
       - name: Deploy Bot
