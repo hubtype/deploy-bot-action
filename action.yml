@@ -35,9 +35,19 @@ runs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Install Botonic
+        working-directory: ${{ inputs.BOT_SRC_DIR }}
+        run: npm install -g @botonic/cli
+        shell: bash
+
+      - name: Botonic version
+        working-directory: ${{ inputs.BOT_SRC_DIR }}
+        run: botonic --version
+        shell: bash
+
       - name: Install Dependencies
         working-directory: ${{ inputs.BOT_SRC_DIR }}
-        run: npm install -g @botonic/cli && npm ci
+        run: npm ci
         shell: bash
 
       - name: Build Bot
