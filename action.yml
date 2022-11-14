@@ -22,7 +22,7 @@ inputs:
     description: "The command that builds the bot, for example 'npm run build'"
     required: true
     default: "npm run build"
-  SLACK_WEBHOOK_QA:
+  SLACK_WEBHOOK_URL:
     description: "Slack's webhook"
     required: false
     
@@ -92,5 +92,5 @@ runs:
             ]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ inputs.SLACK_WEBHOOK_QA }}
+          SLACK_WEBHOOK_URL: ${{ inputs.SLACK_WEBHOOK_URL }}
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
