@@ -85,7 +85,7 @@ runs:
                     "emoji": true
                   },
                   "value": "try_botaso",
-                  "url": "https://botaso-staging.netlify.app/",
+                  "url": "https://botaso-${{inputs.ENVIRONMENT}}.netlify.app/",
                   "action_id": "button-action"
                 }
               }
