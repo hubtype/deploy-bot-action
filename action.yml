@@ -50,12 +50,12 @@ runs:
         run: npm ci
         shell: bash
 
-      - name: Build Bot
-        working-directory: ${{ inputs.BOT_SRC_DIR }}
-        run: botonic logout && ${{ inputs.BUILD_COMMAND }}
-        shell: bash
+      # - name: Build Bot
+      #   working-directory: ${{ inputs.BOT_SRC_DIR }}
+      #   run: botonic logout && ${{ inputs.BUILD_COMMAND }}
+      #   shell: bash
 
       - name: Deploy Bot
         working-directory: ${{ inputs.BOT_SRC_DIR }}
-        run: botonic deploy -b ${{ inputs.BOT_NAME }} -e ${{ inputs.USERNAME }} -p ${{ inputs.PASSWORD }}
+        run: botonic deploy -b ${{ inputs.BOT_NAME }} -c ${{ inputs.BUILD_COMMAND }} -e ${{ inputs.USERNAME }} -p ${{ inputs.PASSWORD }}
         shell: bash
