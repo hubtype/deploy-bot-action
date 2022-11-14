@@ -2,6 +2,10 @@ name: "Deploy Bot"
 description: "Build & Publish bot to your environment"
 
 inputs:
+  ENVIRONMENT:
+    description:  env where bot will be deployed
+    required: true
+    default: qa-int
   BOT_SRC_DIR:
     description: "Directory where the bot src is"
     required: true
@@ -18,6 +22,9 @@ inputs:
     description: "The command that builds the bot, for example 'npm run build'"
     required: true
     default: "npm run build"
+  SLACK_WEBHOOK_QA:
+    description: "Slack's webhook"
+    required: false
     
 runs:
   using: "composite"
@@ -50,12 +57,40 @@ runs:
         run: npm ci
         shell: bash
 
-      # - name: Build Bot
-      #   working-directory: ${{ inputs.BOT_SRC_DIR }}
-      #   run: botonic logout && ${{ inputs.BUILD_COMMAND }}
-      #   shell: bash
-
       - name: Deploy Bot
         working-directory: ${{ inputs.BOT_SRC_DIR }}
         run: botonic deploy -b ${{ inputs.BOT_NAME }} -c ${{ inputs.BUILD_COMMAND }} -e ${{ inputs.USERNAME }} -p ${{ inputs.PASSWORD }}
         shell: bash
+
+      - name: Send Slack notification
+        id: slack
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+            "icon_emoji": ":rocket:",
+            "channel": "logging-${{inputs.ENVIRONMENT}}" ,
+            "blocks": [
+              {
+                "type": "section",
+                "text": {
+                  "type": "mrkdwn",
+                  "text": "Botaso deployed!"
+                },
+                "accessory": {
+                  "type": "button",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Try Botaso",
+                    "emoji": true
+                  },
+                  "value": "try_botaso",
+                  "url": "https://botaso-staging.netlify.app/",
+                  "action_id": "button-action"
+                }
+              }
+            ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ inputs.SLACK_WEBHOOK_QA }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
