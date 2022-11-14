@@ -19,9 +19,9 @@ inputs:
     description: "Password of the user admin that will deploy the bot"
     required: true
   BUILD_COMMAND:
-    description: "The command that builds the bot, for example 'npm run build'"
+    description: "The command that builds the bot, for example 'build'"
     required: true
-    default: "npm run build"
+    default: "build"
   SLACK_WEBHOOK_URL:
     description: "Slack's webhook"
     required: false
